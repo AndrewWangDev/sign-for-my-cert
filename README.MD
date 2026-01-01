@@ -1,8 +1,9 @@
-# 自签名证书生成脚本
+# 自签名固定证书生成脚本
 
+[![Release](https://img.shields.io/badge/Release-download-brightgreen.svg)](sign-for-your-cert.sh)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-一个用于生成私有证书颁发机构 (CA) 和服务器证书的 Shell 脚本，旨在为自建服务启用严格的 TLS 验证。
+这是一个用于生成私有证书颁发机构 (CA) 、服务器证书及其固定SHA256值的 Shell 脚本，旨在为用VPS自建代理服务的用户，提供无需域名的、支持任意伪装的、严格安全的 TLS 验证，适用于AnyTLS、Trajon等基于TLS的主流协议。
 
 本文档同时提供中英双语版本，[Click here for English documentation](#en-us).
 
@@ -17,17 +18,18 @@ GFW 泄露的代码和工作日志表明，其具备利用伪造证书进行 MIT
 
 ## 解决方案
 
-此脚本 (`sign-for-your-cert.sh`) 用于建立一个私有的证书颁发机构。通过生成一个根证书 (`rootCA.crt`) 供客户端信任，并用其签发服务器证书 (`server.crt`)，您可以强制开启严格的 TLS 验证。脚本同时会生成 SHA256 指纹用于证书锁定 (Certificate Pinning)，确保客户端只连接到您自己的服务器。
+此脚本 (`sign-for-your-cert.sh`) 用于建立一个私有的证书颁发机构，同时生成一个根证书 (`rootCA.crt`) 供客户端信任，并用其签发服务器证书 (`server.crt`)，以便用户对伪装的域名强制开启严格的 TLS 验证，同时生成 SHA256 指纹用于证书锁定，防止遭到MITM攻击。
 
 ## 功能
 
--   使用 `openssl` 生成私有根 CA 和服务器证书。
--   输出用于证书锁定的 SHA256 指纹。
+-   生成私有根 CA 和服务器证书及私钥。
+-   获取用于证书锁定的 SHA256 指纹。
 -   自动清理包括 CA 私钥在内的敏感中间文件。
 
-## 先决条件
+## 环境要求
 
--   基于 Linux 的系统环境，并已安装 `openssl`。
+-   已安装 `openssl`的Ubuntu系统。
+-   已安装好简单的代理客户端和代理服务端（面板）。
 
 ## 使用方法
 
@@ -71,11 +73,12 @@ sudo ./sign-for-your-cert.sh
 
 <a name="en-us"></a>
 
-# Self-Signed Certificate Generator for Secure Proxies
+# Self-Signed Pinned Certificate Generator Script
 
+[![Release](https://img.shields.io/badge/Release-download-brightgreen.svg)](sign-for-your-cert.sh)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-A shell script to generate a private Certificate Authority (CA) and server certificates to enable strict TLS verification for self-hosted services.
+This is a shell script for generating a private Certificate Authority (CA), a server certificate, and its pinned SHA256 value. It's designed for users of self-hosted VPS proxy services, providing strictly secure TLS validation that doesn't require a domain name and supports arbitrary SNI spoofing. It is suitable for major TLS-based protocols like AnyTLS, Trojan, etc.
 
 ## Threat Model
 
@@ -85,17 +88,18 @@ This script mitigates this threat by establishing a private trust anchor.
 
 ## Solution
 
-This script (`sign-for-your-cert.sh`) establishes a private Certificate Authority. By generating a root certificate (`rootCA.crt`) for client-side trust and issuing a server certificate (`server.crt`) signed by it, you can enforce strict TLS validation. The script also generates a SHA256 fingerprint for certificate pinning, ensuring the client connects only to your authentic server.
+This script (`sign-for-your-cert.sh`) establishes a private Certificate Authority, generates a root certificate (`rootCA.crt`) for client-side trust, and signs a server certificate (`server.crt`) with it. This allows users to enforce strict TLS validation for a spoofed domain, while generating a SHA256 fingerprint for certificate pinning to prevent MITM attacks.
 
 ## Features
 
--   Generates a private Root CA and server certificate using `openssl`.
--   Outputs a SHA256 fingerprint for certificate pinning.
+-   Generates a private Root CA, server certificate, and private key.
+-   Obtains the SHA256 fingerprint for certificate pinning.
 -   Automates cleanup of sensitive intermediate files, including the CA private key.
 
-## Prerequisites
+## Requirements
 
--   A Linux-based environment with `openssl` installed.
+-   An Ubuntu system with `openssl` installed.
+-   A basic proxy client and server (panel) must already be installed.
 
 ## Usage Guide
 
