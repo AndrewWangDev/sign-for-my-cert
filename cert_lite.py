@@ -170,15 +170,6 @@ DNS.2 = *.{domain}
             with open(server_crt, "rb") as f:
                 cert_bytes = f.read()
             
-            # DER format is needed for correct hash if it was PEM (OpenSSL generates PEM by default with x509)
-            # Actually OpenSSL default out is PEM. To follow the bash script exactly:
-            # openssl x509 -in server.crt -outform DER | openssl dgst -sha256 -binary | openssl base64
-            
-            # We can do this in python:
-            # 1. Load the cert (it's PEM)
-            # 2. Convert to DER (using openssl or assume standard libraries, but we rely on openssl cli availability so let's stick to it or use python logic)
-            # Let's use subprocess for the exact piped logic to be safe and consistent with previous script requirement
-            
             cmd_pipe = f'openssl x509 -in "{server_crt}" -outform DER | openssl dgst -sha256 -binary | openssl base64'
             result = subprocess.run(cmd_pipe, shell=True, capture_output=True, text=True)
             fingerprint = result.stdout.strip()
